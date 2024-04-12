@@ -1,0 +1,44 @@
+package com.chitchat.security;
+
+import java.io.IOException;
+
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.GenericFilterBean;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@Component
+public class CustomFilter extends GenericFilterBean {
+
+    private static final String[] AUTH_WHITELIST = { "/register" };
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+
+        String requestURI = httpRequest.getRequestURI();
+
+        if (isAuthenticationNotRequired(requestURI)) {
+            chain.doFilter(request, response);
+        } else {
+            // Authentication logic can be placed here if needed
+            httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }
+    }
+
+    private boolean isAuthenticationNotRequired(String requestURI) {
+        for (String url : AUTH_WHITELIST) {
+            if (requestURI.equals(url)) {
+                return true;
+            }
+        }
+        return false;
+    }
+}

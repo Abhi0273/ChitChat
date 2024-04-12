@@ -1,0 +1,5 @@
+package com.coachify.customer.service;
+
+public class CustomUserDetailsService {
+
+}

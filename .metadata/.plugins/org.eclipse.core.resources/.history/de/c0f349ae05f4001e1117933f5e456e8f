@@ -1,0 +1,5 @@
+package com.chitchat.entity;
+
+public class User {
+
+}

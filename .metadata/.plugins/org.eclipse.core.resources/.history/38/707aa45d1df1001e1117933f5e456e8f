@@ -1,0 +1,5 @@
+package com.coachify.customer.utils;
+
+public class NotEmptyOrNull {
+
+}

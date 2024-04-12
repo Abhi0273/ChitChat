@@ -1,0 +1,5 @@
+package com.chitchat.repository;
+
+public class UserRepository {
+
+}

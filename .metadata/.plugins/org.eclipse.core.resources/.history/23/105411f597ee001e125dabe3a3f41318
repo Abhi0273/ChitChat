@@ -1,0 +1,5 @@
+package com.coachify.customer.dto;
+
+public class JwtResponse {
+
+}

@@ -1,0 +1,5 @@
+package com.coachify.customer.security;
+
+public class JwtAuthenticationFilter {
+
+}

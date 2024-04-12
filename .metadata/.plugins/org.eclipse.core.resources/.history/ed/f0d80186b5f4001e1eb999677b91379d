@@ -1,0 +1,5 @@
+package com.chitchat.controller;
+
+public class UserController {
+
+}

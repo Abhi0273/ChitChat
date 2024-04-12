@@ -1,0 +1,5 @@
+package com.chitchat.dto;
+
+public class UserDTO {
+
+}

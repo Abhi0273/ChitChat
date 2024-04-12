@@ -1,0 +1,5 @@
+package com.coachify.customer.exception;
+
+public class GlobalExceptionHandler {
+
+}

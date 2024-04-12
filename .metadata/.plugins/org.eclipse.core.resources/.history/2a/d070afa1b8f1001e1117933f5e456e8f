@@ -1,0 +1,45 @@
+package com.coachify.coaches.exception;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+	
+	@ExceptionHandler(CustomerAlreadyExistsException.class)
+	public ResponseEntity<Object> handleCustomerAlreadyExistsException(CustomerAlreadyExistsException ex){
+		return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ex.getMessage());
+		
+	}
+	
+	@ExceptionHandler(CustomerNotFoundException.class)
+	public ResponseEntity<Object> handleCustomerNotFoundException(CustomerNotFoundException ex){
+		return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ex.getMessage());
+	}
+	
+	@ExceptionHandler(LoginCustomerException.class)
+	public ResponseEntity<Object> handleLoginCustomerException(LoginCustomerException ex){
+		return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ex.getMessage());
+	}
+	
+	@ExceptionHandler(CustomerException.class)
+	public ResponseEntity<Object> handleCustomerException(CustomerException ex){
+		return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ex.getMessage());
+	}
+	
+	
+}

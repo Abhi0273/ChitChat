@@ -1,0 +1,102 @@
+package com.chitchat.security;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+public class WebSecurityConfig {
+	
+//	private final EntryPointUnauthorizedHandler unauthorizedHandler;
+//    private final AuthenticationConfiguration authConfig;
+//    private final AuthenticationTokenFilter authenticationTokenFilter;
+	
+	@Autowired
+    private JwtAuthenticationEntryPoint point;
+    @Autowired
+    private JwtAuthenticationFilter filter;
+    
+    List<String> publicApis = List.of("/ChitChat/v1/user/hello", "/ChitChat/v1/auth/login");
+    
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .build();
+    }
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	//requestMatchers("/Coachify/customer/**").authenticated()
+//	@Bean
+//	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//		http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(auth -> {
+//			auth.requestMatchers("/Chitchat/v1/auth/login").permitAll()
+////			.requestMatchers("/ChitChat/v1/user/hello").authenticated();
+//			.anyRequest().authenticated();
+//		}).exceptionHandling(ex -> ex.authenticationEntryPoint(point))
+//		.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//		http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+//        return http.build();
+//	}
+	
+//	@Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return (web) -> web.ignoring().requestMatchers(publicApis.toArray(String[]::new));
+//    }
+	
+	
+	
+ private static final List<String> AUTH_WHITELIST = Arrays.asList("/ChitChat/v1/user/hello", "/register");
+
+    @SuppressWarnings("deprecation")
+	@Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(AbstractHttpConfigurer::disable)
+            .authorizeRequests(authorize -> authorize
+                .anyRequest().authenticated() // Apply authentication to all requests
+            )
+            .exceptionHandling(ex -> ex.authenticationEntryPoint(point)) // Handle authentication exceptions
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Set session creation policy
+            .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class); // Add custom filter
+
+        return http.build();
+    }
+
+    private CsrfTokenRepository csrfTokenRepository() {
+        CookieCsrfTokenRepository repository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        repository.setCookiePath("/");
+        return repository;
+    }
+
+    // Check if the request path is in the whitelist
+    private boolean isAuthenticationNotRequired(HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        return AUTH_WHITELIST.contains(requestURI);
+    }
+
+}

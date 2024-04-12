@@ -1,0 +1,23 @@
+package com.coachify.customer.exception;
+
+public class CustomerAlreadyExistsException extends CustomerException{
+	
+	private static final long serialVersionUID = 1L;
+	private final String userFriendlyMessage;
+
+
+	public CustomerAlreadyExistsException(String userFriendlyMessage) {
+		this.userFriendlyMessage = userFriendlyMessage;
+	}
+	
+	@Override
+    public String getMessage() {
+        return userFriendlyMessage;
+    }
+	
+	@Override
+    public String toString() {
+        return "CustomerAlreadyExistsException: " + userFriendlyMessage;
+    }
+
+}

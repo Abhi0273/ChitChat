@@ -1,0 +1,11 @@
+package com.coachify.customer.exception;
+
+public class LoginCustomerException extends CustomerException{
+	
+	private static final long serialVersionUID = 1L;
+
+	public LoginCustomerException(StackTraceElement[] stackTrace, String userFriendlyMessage) {
+		super(stackTrace, userFriendlyMessage);
+	}
+
+}
